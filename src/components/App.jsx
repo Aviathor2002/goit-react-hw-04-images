@@ -4,8 +4,10 @@ import Button from './Button/Button';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import Searchbar from './Searchbar/Searchbar';
 import { getImages } from 'service/image-service';
-import { Loader } from './Loader/Loader';
+import { Blocks } from 'react-loader-spinner';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import Modal from './Modal/Modal';
+
 export default class App extends Component {
   state = {
     searchName: '',
@@ -17,6 +19,7 @@ export default class App extends Component {
     error: null,
     showModal: false,
     largeImg: null,
+    imageAlt: '',
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -28,16 +31,19 @@ export default class App extends Component {
     }
   }
 
-  toggleModal = image => {
+  toggleModal = (image, tag) => {
     // this.setState(({ showModal }) => ({ showModal: !showModal }));
 
-    this.setState({ showModal: true, largeImg: image });
+    this.setState({ showModal: true, largeImg: image, imageAlt: tag });
   };
   onCloseModal = () => {
     this.setState({ showModal: false });
   };
 
   handleSubmit = value => {
+    if (value.trim() === '') {
+      Notify.warning('Write smothing');
+    }
     this.setState({
       searchName: value,
       images: [],
@@ -55,6 +61,9 @@ export default class App extends Component {
 
       if (response.data.hits.length === 0) {
         this.setState({ isEmpty: true });
+        Notify.info(`We can't found ${searchName}`);
+      } else {
+        Notify.success('Success');
       }
 
       this.setState(prevState => ({
@@ -64,6 +73,9 @@ export default class App extends Component {
           page < Math.ceil(response.data.total / response.data.totalHits),
       }));
     } catch (error) {
+      Notify.failure(
+        `Something is wrong, try to reload page! Error: ${error.message}`
+      );
       this.setState({ error: error.message });
     } finally {
       this.setState({ isLoading: false });
@@ -75,19 +87,19 @@ export default class App extends Component {
   };
 
   render() {
-    const { searchName, page, images, isLoading } = this.state;
+    const { images, isLoading, largeImg, imageAlt } = this.state;
     return (
       <AppDiv>
         <Searchbar onSubmitClick={this.handleSubmit} />
         <ImageGallery images={images} onOpen={this.toggleModal} />
-        {isLoading && <Loader />}
+        {isLoading && <Blocks />}
         {this.state.images.length !== 0 && (
-          <Button loadMore={this.onLoadMore} isLoading={this.state.isLoading} />
+          <Button loadMore={this.onLoadMore} isLoading={isLoading} />
         )}
 
         {this.state.showModal && (
           <Modal onClose={this.onCloseModal}>
-            <img src={this.state.largeImg} alt="" />
+            <img src={largeImg} alt={imageAlt} />
           </Modal>
         )}
       </AppDiv>

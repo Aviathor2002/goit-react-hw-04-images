@@ -1,4 +1,6 @@
-import { React, Component } from 'react';
+import PropTypes from 'prop-types';
+
+import { React } from 'react';
 import { ImageGalleryList } from './ImageGallery.style';
 import { GalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 
@@ -19,4 +21,12 @@ export const ImageGallery = ({ images, onOpen }) => {
         })}
     </ImageGalleryList>
   );
+};
+
+ImageGallery.propTypes = {
+  images: PropTypes.arrayOf(
+    PropTypes.shape({
+      onOpen: PropTypes.func,
+    })
+  ),
 };

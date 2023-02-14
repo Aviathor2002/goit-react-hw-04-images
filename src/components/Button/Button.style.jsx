@@ -24,4 +24,7 @@ export const ButtonStyle = styled.button`
   &:focus {
     background-color: #303f9f;
   }
+  &:disabled {
+    background-color: gray;
+  }
 `;
