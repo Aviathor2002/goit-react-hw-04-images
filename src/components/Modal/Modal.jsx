@@ -5,13 +5,19 @@ import { Overlay, ModalWindow } from './Modal.style';
 const modalRoot = document.querySelector('#modal-root');
 export default class Modal extends Component {
   componentDidMount() {
-    window.addEventListener('keydown', e => {
-      if (e.code === 'Escape') {
-        console.log(e.code);
-        this.props.onClose();
-      }
-    });
+    window.addEventListener('keydown', this.onEscClick);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.onEscClick);
+  }
+
+  onEscClick = e => {
+    if (e.code === 'Escape') {
+      console.log(e.code);
+      this.props.onClose();
+    }
+  };
 
   render() {
     return createPortal(

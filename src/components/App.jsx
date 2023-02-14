@@ -31,10 +31,10 @@ export default class App extends Component {
   toggleModal = image => {
     // this.setState(({ showModal }) => ({ showModal: !showModal }));
 
-    this.setState({ showModal: !this.state.showModal, largeImg: image });
+    this.setState({ showModal: true, largeImg: image });
   };
   onCloseModal = () => {
-    this.setState({ showModal: !this.state.showModal });
+    this.setState({ showModal: false });
   };
 
   handleSubmit = value => {
