@@ -70,7 +70,7 @@ export default class App extends Component {
         images: [...prevState.images, ...response.data.hits],
 
         isVisible:
-          page < Math.ceil(response.data.total / response.data.totalHits),
+          page < Math.ceil(response.data.totalHits / response.data.hits.length),
       }));
     } catch (error) {
       Notify.failure(
@@ -87,13 +87,14 @@ export default class App extends Component {
   };
 
   render() {
-    const { images, isLoading, largeImg, imageAlt } = this.state;
+    const { images, isLoading, largeImg, imageAlt, isVisible } = this.state;
+    console.log(this.state);
     return (
       <AppDiv>
         <Searchbar onSubmitClick={this.handleSubmit} />
         <ImageGallery images={images} onOpen={this.toggleModal} />
         {isLoading && <Blocks />}
-        {this.state.images.length !== 0 && (
+        {isVisible && (
           <Button loadMore={this.onLoadMore} isLoading={isLoading} />
         )}
 
