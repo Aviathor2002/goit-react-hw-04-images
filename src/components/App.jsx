@@ -19,7 +19,11 @@ export const App = () => {
   const [showModal, setShowModal] = useState(false);
   const [imageAlt, setImageAlt] = useState('');
   const [largeImg, setLargeImg] = useState(null);
+
   useEffect(() => {
+    if (searchName === '') {
+      return;
+    }
     fetchImg();
   }, [searchName, page]);
 
@@ -59,9 +63,11 @@ export const App = () => {
       }
 
       setImages([...images, ...response.data.hits]);
-      setIsVisible(
-        page < Math.ceil(response.data.totalHits / response.data.hits.length)
-      );
+      setIsVisible(() => {
+        return (
+          page < Math.ceil(response.data.totalHits / response.data.hits.length)
+        );
+      });
     } catch (error) {
       Notify.failure(
         `Something is wrong, try to reload page! Error: ${error.message}`
@@ -75,8 +81,6 @@ export const App = () => {
   const onLoadMore = () => {
     setPage(page + 1);
   };
-
-  // const { images, isLoading, largeImg, imageAlt, isVisible } = this.state;
 
   return (
     <AppDiv>
